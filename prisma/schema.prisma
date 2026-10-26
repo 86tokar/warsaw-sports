@@ -2,9 +2,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Postgres на Neon: DATABASE_URL — пул соединений (для сайта), DIRECT_URL — прямое подключение (для prisma db push)
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // Вид спорта: футбол, бег, волейбол...
