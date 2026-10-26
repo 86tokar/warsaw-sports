@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Вид спорта: футбол, бег, волейбол...
+model Sport {
+  id         String     @id @default(cuid())
+  slug       String     @unique
+  name       String
+  events     Event[]
+  activities Activity[]
+}
+
+// Площадка: стадион, арена, парк, зал
+model Venue {
+  id         String     @id @default(cuid())
+  name       String
+  address    String
+  district   String
+  lat        Float?
+  lng        Float?
+  website    String?
+  // Другие написания названия через "|": спонсорские имена, адрес, разговорные варианты.
+  // По ним агент сбора (ingest/) сопоставляет площадку из расписания с этой записью.
+  aliases    String?
+  events     Event[]
+  activities Activity[]
+}
+
+// Организатор: клуб, федерация, частное лицо
+model Organizer {
+  id         String     @id @default(cuid())
+  name       String
+  website    String?
+  events     Event[]
+  activities Activity[]
+}
+
+// Событие. type: match | tournament | mass | open_training
+// status: published | pending (пришло из формы, ждёт проверки)
+// Секции и кружки с регулярным расписанием — отдельная модель Activity ниже
+model Event {
+  id           String    @id @default(cuid())
+  title        String
+  description  String?
+  type         String
+  startsAt     DateTime
+  endsAt       DateTime?
+  isFree       Boolean   @default(false)
+  // Событие для детей: детский забег, турнир, праздник, открытая тренировка для детей
+  forKids      Boolean   @default(false)
+  priceInfo    String?
+  url          String?
+  // Официальная страница, откуда взято событие (расписание клуба или лиги)
+  sourceUrl    String?
+  locationNote String?
+  status       String    @default("published")
+  source       String    @default("manual")
+  // Ключ для повторных прогонов агента сбора: одно и то же событие не создаётся дважды
+  externalId   String?   @unique
+  createdAt    DateTime  @default(now())
+
+  sportId     String
+  sport       Sport      @relation(fields: [sportId], references: [id])
+  venueId     String?
+  venue       Venue?     @relation(fields: [venueId], references: [id])
+  organizerId String?
+  organizer   Organizer? @relation(fields: [organizerId], references: [id])
+
+  @@index([status, startsAt])
+}
+
+// Секция: регулярные занятия (секция, школа, группа) с расписанием, а не разовое событие.
+// audience: kids | adults | seniors | all. Возраст в годах, если указан на странице.
+model Activity {
+  id           String   @id @default(cuid())
+  name         String
+  audience     String
+  ageMin       Int?
+  ageMax       Int?
+  // Расписание текстом, как на сайте: "пн, ср 17:00–18:00"
+  schedule     String?
+  isFree       Boolean  @default(false)
+  priceInfo    String?
+  url          String?
+  sourceUrl    String?
+  locationNote String?
+  // Район, если площадки нет в таблице Venue (школьный зал, бассейн): для фильтра по району
+  district     String?
+  status       String   @default("published")
+  source       String   @default("manual")
+  externalId   String?  @unique
+  // Когда секцию последний раз видели в источнике: старые записи можно скрывать
+  lastSeenAt   DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  sportId     String
+  sport       Sport      @relation(fields: [sportId], references: [id])
+  venueId     String?
+  venue       Venue?     @relation(fields: [venueId], references: [id])
+  organizerId String?
+  organizer   Organizer? @relation(fields: [organizerId], references: [id])
+
+  @@index([status, audience])
+}

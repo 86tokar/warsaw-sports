@@ -1,0 +1,153 @@
+:root {
+  --paper: #f1f4f6;
+  --surface: #ffffff;
+  --ink: #0f1b26;
+  --muted: #566774;
+  --line: #cbd4da;
+  --vistula: #1b5e86;
+  --red: #c91f3a;
+  --green: #2b7a4b;
+  --amber: #8a5a00;
+  --sun: #f6c22b;
+  --radius: 6px;
+  --font-body: var(--font-onest), system-ui, sans-serif;
+  --font-display: var(--font-unbounded), var(--font-onest), system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+a { color: inherit; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--vistula);
+  outline-offset: 2px;
+}
+
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+
+/* Шапка */
+.site { border-bottom: 2px solid var(--ink); background: var(--surface); }
+.site-inner { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-top: 14px; padding-bottom: 14px; flex-wrap: wrap; }
+.logo { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; text-decoration: none; letter-spacing: -0.01em; }
+.site nav { display: flex; gap: 20px; flex-wrap: wrap; }
+.site nav a { text-decoration: none; font-weight: 500; }
+.site nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+.site-footer { border-top: 1px solid var(--line); padding: 24px 0; color: var(--muted); font-size: 0.9rem; margin-top: 40px; }
+
+/* Заголовок главной */
+.intro { padding: 36px 0 20px; }
+.intro h1, .page-title { font-family: var(--font-display); font-size: clamp(1.7rem, 4vw, 2.6rem); line-height: 1.12; letter-spacing: -0.02em; margin: 0 0 12px; max-width: 18ch; }
+.intro p { color: var(--muted); max-width: 58ch; margin: 0; }
+
+/* Фильтры */
+.filters { border-top: 1px solid var(--line); }
+.filter-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.filter-label { flex: 0 0 110px; color: var(--muted); font-size: 0.9rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; font-size: 0.92rem; background: var(--surface); }
+.chip:hover { border-color: var(--ink); }
+.chip[aria-current='true'] { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+.count { color: var(--muted); margin: 20px 0 0; }
+
+/* Расписание по дням */
+.board { margin: 12px 0 40px; }
+.day { display: grid; grid-template-columns: 130px 1fr; border-top: 2px solid var(--ink); }
+.day-head { padding: 16px 12px 16px 0; align-self: start; position: sticky; top: 0; }
+.day-num { font-family: var(--font-display); font-size: 2.6rem; font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
+.day.today .day-num { box-shadow: inset 0 -0.3em 0 var(--sun); }
+.day-name { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+.rows { list-style: none; margin: 0; padding: 0; }
+
+.row { display: grid; grid-template-columns: 64px 1fr auto; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); text-decoration: none; align-items: start; }
+.row:last-child { border-bottom: 0; }
+.rows li:last-child .row { border-bottom: 0; }
+.row:hover .row-title { color: var(--vistula); text-decoration: underline; text-underline-offset: 3px; }
+.row-time { font-variant-numeric: tabular-nums; font-weight: 600; }
+.row-title { display: block; font-weight: 600; font-size: 1.05rem; }
+.row-meta { display: flex; flex-wrap: wrap; gap: 2px 16px; color: var(--muted); font-size: 0.9rem; margin-top: 2px; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.tag { font-size: 0.8rem; padding: 2px 8px; border-radius: 4px; border: 1px solid currentColor; white-space: nowrap; }
+.tag-match { color: var(--red); }
+.tag-tournament { color: var(--vistula); }
+.tag-mass { color: var(--green); }
+.tag-open_training { color: var(--amber); }
+.tag-free { background: var(--sun); border-color: var(--sun); color: var(--ink); }
+.tag-kids { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+.empty { border-top: 2px solid var(--ink); padding: 32px 0; max-width: 60ch; }
+.empty h2 { margin: 0 0 8px; }
+
+/* Страницы внутри */
+.page { padding: 32px 0 20px; }
+.back { display: inline-block; margin-bottom: 20px; color: var(--muted); }
+.page-title { max-width: 26ch; }
+.facts { display: grid; grid-template-columns: 150px 1fr; gap: 10px 20px; margin: 24px 0; padding: 16px 0; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--line); }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; }
+.prose { max-width: 66ch; white-space: pre-line; }
+.btn { display: inline-block; background: var(--ink); color: #fff; border: 0; padding: 12px 20px; border-radius: var(--radius); font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; }
+.btn:hover { background: var(--vistula); }
+.map { margin-top: 28px; }
+.map iframe { width: 100%; height: 320px; border: 1px solid var(--line); border-radius: var(--radius); }
+
+/* Площадки */
+.venue-list { list-style: none; padding: 0; margin: 24px 0 0; border-top: 2px solid var(--ink); }
+.venue-list li { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.venue-name { font-weight: 600; font-size: 1.05rem; }
+.venue-sub { color: var(--muted); font-size: 0.92rem; }
+
+/* Форма */
+.form { display: grid; gap: 18px; max-width: 620px; margin-top: 24px; }
+.form label { display: grid; gap: 6px; font-weight: 500; }
+.form .hint { color: var(--muted); font-weight: 400; font-size: 0.9rem; }
+input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius); font: inherit; background: var(--surface); color: var(--ink); }
+.check { display: flex !important; align-items: center; gap: 10px; }
+.check input { width: auto; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.notice, .error { padding: 12px 16px; border-radius: var(--radius); max-width: 620px; margin-top: 20px; }
+.notice { background: #e3f1e8; border: 1px solid var(--green); }
+.error { background: #fbe5e8; border: 1px solid var(--red); }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+@media (max-width: 700px) {
+  .day { grid-template-columns: 1fr; }
+  .day-head { position: static; display: flex; gap: 10px; align-items: baseline; padding: 14px 0 4px; }
+  .day-num { font-size: 2rem; }
+  .row { grid-template-columns: 56px 1fr; }
+  .tags { grid-column: 2; justify-content: flex-start; }
+  .filter-row { flex-direction: column; gap: 6px; }
+  .filter-label { flex: none; }
+  .facts { grid-template-columns: 1fr; gap: 2px; }
+  .facts dd { margin-bottom: 10px; }
+  .two { grid-template-columns: 1fr; }
+}
+
+/* Секции: в первой колонке вид спорта вместо времени */
+.sections .row { grid-template-columns: 130px 1fr auto; }
+.sections .row-time { color: var(--muted); font-weight: 500; font-size: 0.92rem; }
+.tag-audience-kids { background: var(--ink); border-color: var(--ink); color: #fff; }
+.tag-audience-adults { color: var(--vistula); }
+.tag-audience-seniors { color: var(--green); }
+.tag-audience-all { color: var(--amber); }
+@media (max-width: 700px) {
+  .sections .row { grid-template-columns: 1fr; gap: 4px; }
+  .sections .tags { grid-column: 1; }
+}
+
+/* Постраничный вывод секций */
+.pager { display: flex; gap: 20px; align-items: center; justify-content: center; margin: 24px 0 40px; color: var(--muted); }
+
+/* Админка */
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn-ghost:hover { background: transparent; border-color: var(--ink); }
+.admin-actions { display: flex; flex-direction: column; gap: 8px; align-self: start; }
