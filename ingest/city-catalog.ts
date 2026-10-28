@@ -9,6 +9,7 @@ import { fetchPage, robotsVerdict } from './fetch';
 import { htmlToText } from './html';
 import { EXTRACTED_DIR, PAGES_DIR, type ExtractedActivity } from './schema';
 import { SPORTS } from './sources';
+import { ADDRESS_ON_PAGE } from '../src/i18n';
 
 export const SOURCE_ID = 'warszawa-zajecia';
 export const LIST_URL = 'https://sport.um.warszawa.pl/zajecia-sportowe';
@@ -181,10 +182,10 @@ function scheduleOf(c: Card, body: string, lastDate: string | null): string | nu
   return withDates([days, time].filter(Boolean).join(' '), lastDate);
 }
 
-// "ср 11:00 (до 23.12.2026)": последняя дата цикла, если она известна
+// "śr 11:00 (do 23.12.2026)": последняя дата цикла, если она известна. Тексты в данных — по-польски, как источник
 function withDates(parts: string, lastDate: string | null): string | null {
   if (!parts) return null;
-  return lastDate ? `${parts} (до ${lastDate.slice(8, 10)}.${lastDate.slice(5, 7)}.${lastDate.slice(0, 4)})` : parts;
+  return lastDate ? `${parts} (do ${lastDate.slice(8, 10)}.${lastDate.slice(5, 7)}.${lastDate.slice(0, 4)})` : parts;
 }
 
 async function main() {
@@ -245,7 +246,8 @@ async function main() {
       locationNote:
         detail.address ??
         c.title.split(/ [-–] /).slice(1).find((s) => /pływalni|hala|ośrod|osir|stadion|kort|park|ul\./i.test(s))?.trim() ??
-        (c.district.includes(",") ? `${c.district}: адрес на странице занятия` : "адрес на странице занятия"),
+        // Польская заглушка: на сайте она переводится на язык страницы (placeText в src/i18n)
+        (c.district.includes(",") ? `${c.district}: ${ADDRESS_ON_PAGE}` : ADDRESS_ON_PAGE),
       // Несколько районов ("Mokotów, Ochota") фильтру по району не подходят: тогда район не указываем
       district: c.district && !c.district.includes(',') ? c.district : null,
       url: c.url,

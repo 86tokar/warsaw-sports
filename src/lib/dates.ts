@@ -61,12 +61,8 @@ function weekday(d: Date): number {
   return new Date(Date.UTC(p.year, p.month - 1, p.day)).getUTCDay(); // 0 = воскресенье
 }
 
-export const WHEN_OPTIONS = [
-  { slug: 'all', label: 'Все даты' },
-  { slug: 'today', label: 'Сегодня' },
-  { slug: 'weekend', label: 'Выходные' },
-  { slug: 'week', label: '7 дней' },
-] as const;
+// Подписи периодов — в словарях (filters.whenOptions)
+export const WHEN_OPTIONS = ['all', 'today', 'weekend', 'week'] as const;
 
 export function resolveRange(when?: string): { from: Date; to?: Date } {
   const today = startOfWarsawDay(new Date());
@@ -100,26 +96,28 @@ export function isToday(d: Date): boolean {
   return dayKey(d) === dayKey(new Date());
 }
 
-export function formatTime(d: Date): string {
-  return new Intl.DateTimeFormat('ru-RU', {
+// locale — локаль Intl ('ru-RU', 'pl-PL', …), см. INTL_LOCALE в src/i18n
+export function formatTime(d: Date, locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
     timeZone: TZ,
     hour: '2-digit',
     minute: '2-digit',
   }).format(d);
 }
 
-export function dayLabel(d: Date): { num: string; month: string; weekday: string } {
-  const dm = new Intl.DateTimeFormat('ru-RU', { timeZone: TZ, day: 'numeric', month: 'long' });
+export function dayLabel(d: Date, locale: string): { num: string; month: string; weekday: string } {
+  // Месяц из формата "день + месяц", чтобы он был в нужном падеже ("października", "жовтня")
+  const dm = new Intl.DateTimeFormat(locale, { timeZone: TZ, day: 'numeric', month: 'long' });
   const pts = dm.formatToParts(d);
   return {
     num: pts.find((p) => p.type === 'day')?.value ?? '',
     month: pts.find((p) => p.type === 'month')?.value ?? '',
-    weekday: new Intl.DateTimeFormat('ru-RU', { timeZone: TZ, weekday: 'long' }).format(d),
+    weekday: new Intl.DateTimeFormat(locale, { timeZone: TZ, weekday: 'long' }).format(d),
   };
 }
 
-export function formatFullDate(d: Date): string {
-  return new Intl.DateTimeFormat('ru-RU', {
+export function formatFullDate(d: Date, locale: string): string {
+  return new Intl.DateTimeFormat(locale, {
     timeZone: TZ,
     weekday: 'long',
     day: 'numeric',

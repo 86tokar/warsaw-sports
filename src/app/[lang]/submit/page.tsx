@@ -1,19 +1,15 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db';
 import { EVENT_TYPES, isEventType } from '@/lib/labels';
 import { warsawLocalToDate } from '@/lib/dates';
+import { INTL_LOCALE, getDict, href, isLocale, sportName, DEFAULT_LOCALE, pageLang } from '@/i18n';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Добавить событие: Спортивная Варшава' };
 
-const ERRORS: Record<string, string> = {
-  title: 'Название должно быть от 3 до 120 символов.',
-  type: 'Выберите тип события.',
-  sport: 'Выберите вид спорта.',
-  date: 'Укажите дату и время начала. Событие не может быть в прошлом.',
-  end: 'Время окончания должно быть позже начала.',
-  url: 'Ссылка должна начинаться с http:// или https://.',
-};
+export function generateMetadata({ params }: { params: { lang: string } }): Metadata {
+  return isLocale(params.lang) ? { title: getDict(params.lang).submit.title } : {};
+}
 
 function text(formData: FormData, name: string): string {
   const v = formData.get(name);
@@ -23,8 +19,12 @@ function text(formData: FormData, name: string): string {
 async function submitEvent(formData: FormData) {
   'use server';
 
+  // Язык формы — чтобы вернуть человека на ту же страницу
+  const langValue = text(formData, 'lang');
+  const back = href(isLocale(langValue) ? langValue : DEFAULT_LOCALE, '/submit');
+
   // Скрытое поле-ловушка для ботов
-  if (text(formData, 'company')) redirect('/submit?sent=1');
+  if (text(formData, 'company')) redirect(`${back}?sent=1`);
 
   const title = text(formData, 'title');
   const type = text(formData, 'type');
@@ -36,13 +36,13 @@ async function submitEvent(formData: FormData) {
   const venueId = text(formData, 'venueId');
   const organizerName = text(formData, 'organizer');
 
-  if (title.length < 3 || title.length > 120) redirect('/submit?error=title');
-  if (!isEventType(type)) redirect('/submit?error=type');
+  if (title.length < 3 || title.length > 120) redirect(`${back}?error=title`);
+  if (!isEventType(type)) redirect(`${back}?error=type`);
   const sport = sportId ? await prisma.sport.findUnique({ where: { id: sportId } }) : null;
-  if (!sport) redirect('/submit?error=sport');
-  if (!startsAt || startsAt.getTime() < Date.now() - 3_600_000) redirect('/submit?error=date');
-  if (endsAt && endsAt <= startsAt) redirect('/submit?error=end');
-  if (url && !/^https?:\/\//i.test(url)) redirect('/submit?error=url');
+  if (!sport) redirect(`${back}?error=sport`);
+  if (!startsAt || startsAt.getTime() < Date.now() - 3_600_000) redirect(`${back}?error=date`);
+  if (endsAt && endsAt <= startsAt) redirect(`${back}?error=end`);
+  if (url && !/^https?:\/\//i.test(url)) redirect(`${back}?error=url`);
 
   const venue = venueId ? await prisma.venue.findUnique({ where: { id: venueId } }) : null;
 
@@ -71,26 +71,38 @@ async function submitEvent(formData: FormData) {
     },
   });
 
-  redirect('/submit?sent=1');
+  redirect(`${back}?sent=1`);
 }
 
-export default async function SubmitPage({ searchParams }: { searchParams: { sent?: string; error?: string } }) {
-  const [sports, venues] = await Promise.all([
-    prisma.sport.findMany({ orderBy: { name: 'asc' } }),
+export default async function SubmitPage({
+  params,
+  searchParams,
+}: {
+  params: { lang: string };
+  searchParams: { sent?: string; error?: string };
+}) {
+  const lang = pageLang(params.lang);
+  const t = getDict(lang);
+  const [sportRows, venues] = await Promise.all([
+    prisma.sport.findMany(),
     prisma.venue.findMany({ orderBy: { name: 'asc' } }),
   ]);
-  const error = searchParams.error ? ERRORS[searchParams.error] : null;
+  const sports = sportRows
+    .map((s) => ({ id: s.id, name: sportName(t, s.slug, s.name) }))
+    .sort((a, b) => a.name.localeCompare(b.name, INTL_LOCALE[lang]));
+  const errorKey = searchParams.error as keyof typeof t.submit.errors | undefined;
+  const error = errorKey && errorKey in t.submit.errors ? t.submit.errors[errorKey] : null;
 
   return (
     <main className="wrap page">
-      <h1 className="page-title">Добавить событие</h1>
+      <h1 className="page-title">{t.submit.title}</h1>
       <p className="prose">
-        Расскажите о матче, турнире, забеге или открытой тренировке. Мы проверим заявку и опубликуем её.
+        {t.submit.intro} {t.submit.privacyNote}
       </p>
 
       {searchParams.sent && (
         <p className="notice" role="status">
-          Спасибо! Событие отправлено на проверку и появится на сайте после модерации.
+          {t.submit.sent}
         </p>
       )}
       {error && (
@@ -100,30 +112,31 @@ export default async function SubmitPage({ searchParams }: { searchParams: { sen
       )}
 
       <form className="form" action={submitEvent}>
+        <input type="hidden" name="lang" value={lang} />
         <label>
-          Название
+          {t.submit.name}
           <input name="title" required minLength={3} maxLength={120} />
         </label>
 
         <div className="two">
           <label>
-            Тип
+            {t.submit.type}
             <select name="type" required defaultValue="">
               <option value="" disabled>
-                Выберите
+                {t.submit.choose}
               </option>
-              {EVENT_TYPES.map((t) => (
-                <option key={t.slug} value={t.slug}>
-                  {t.label}
+              {EVENT_TYPES.map((type) => (
+                <option key={type} value={type}>
+                  {t.types[type]}
                 </option>
               ))}
             </select>
           </label>
           <label>
-            Вид спорта
+            {t.submit.sport}
             <select name="sportId" required defaultValue="">
               <option value="" disabled>
-                Выберите
+                {t.submit.choose}
               </option>
               {sports.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -136,20 +149,20 @@ export default async function SubmitPage({ searchParams }: { searchParams: { sen
 
         <div className="two">
           <label>
-            Начало
+            {t.submit.start}
             <input type="datetime-local" name="startsAt" required />
-            <span className="hint">Время по Варшаве</span>
+            <span className="hint">{t.submit.warsawTime}</span>
           </label>
           <label>
-            Окончание
+            {t.submit.end}
             <input type="datetime-local" name="endsAt" />
           </label>
         </div>
 
         <label>
-          Площадка
+          {t.submit.venue}
           <select name="venueId" defaultValue="">
-            <option value="">Другое место (укажите ниже)</option>
+            <option value="">{t.submit.otherVenue}</option>
             {venues.map((v) => (
               <option key={v.id} value={v.id}>
                 {v.name}, {v.district}
@@ -159,46 +172,46 @@ export default async function SubmitPage({ searchParams }: { searchParams: { sen
         </label>
 
         <label>
-          Другое место
-          <input name="locationNote" maxLength={300} placeholder="Адрес или описание, если площадки нет в списке" />
+          {t.submit.otherPlace}
+          <input name="locationNote" maxLength={300} placeholder={t.submit.otherPlaceHint} />
         </label>
 
         <div className="two">
           <label className="check">
             <input type="checkbox" name="isFree" />
-            Вход бесплатный
+            {t.submit.free}
           </label>
           <label>
-            Стоимость
-            <input name="priceInfo" maxLength={200} placeholder="Например, 40 zł" />
+            {t.submit.cost}
+            <input name="priceInfo" maxLength={200} placeholder={t.submit.costHint} />
           </label>
         </div>
 
         <label>
-          Организатор
-          <input name="organizer" maxLength={120} placeholder="Клуб, федерация или ваше имя" />
+          {t.submit.organizer}
+          <input name="organizer" maxLength={120} placeholder={t.submit.organizerHint} />
         </label>
 
         <label>
-          Ссылка на событие
+          {t.submit.link}
           <input type="url" name="url" placeholder="https://" />
         </label>
 
         <label>
-          Описание
+          {t.submit.description}
           <textarea name="description" rows={5} maxLength={3000} />
         </label>
 
         <div className="hp" aria-hidden="true">
           <label>
-            Не заполняйте это поле
+            {t.submit.honeypot}
             <input name="company" tabIndex={-1} autoComplete="off" />
           </label>
         </div>
 
         <div>
           <button type="submit" className="btn">
-            Отправить на проверку
+            {t.submit.send}
           </button>
         </div>
       </form>

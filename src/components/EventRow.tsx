@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import { formatTime } from '@/lib/dates';
-import { typeLabel } from '@/lib/labels';
+import { isEventType } from '@/lib/labels';
+import { INTL_LOCALE, href, sportName, type Dict, type Locale } from '@/i18n';
 
 type Props = {
+  lang: Locale;
+  t: Dict;
   event: {
     id: string;
     title: string;
@@ -11,28 +14,28 @@ type Props = {
     isFree: boolean;
     forKids: boolean;
     locationNote: string | null;
-    sport: { name: string };
+    sport: { slug: string; name: string };
     venue: { name: string; district: string } | null;
   };
 };
 
-export default function EventRow({ event }: Props) {
+export default function EventRow({ lang, t, event }: Props) {
   return (
     <li>
-      <Link href={`/events/${event.id}`} className="row">
-        <span className="row-time">{formatTime(event.startsAt)}</span>
+      <Link href={href(lang, `/events/${event.id}`)} className="row">
+        <span className="row-time">{formatTime(event.startsAt, INTL_LOCALE[lang])}</span>
         <span>
           <span className="row-title">{event.title}</span>
           <span className="row-meta">
-            <span>{event.sport.name}</span>
-            <span>{event.venue ? event.venue.name : event.locationNote ?? 'Место уточняется'}</span>
+            <span>{sportName(t, event.sport.slug, event.sport.name)}</span>
+            <span>{event.venue ? event.venue.name : (event.locationNote ?? t.placeTbd)}</span>
             {event.venue && <span>{event.venue.district}</span>}
           </span>
         </span>
         <span className="tags">
-          <span className={`tag tag-${event.type}`}>{typeLabel(event.type)}</span>
-          {event.isFree && <span className="tag tag-free">Бесплатно</span>}
-          {event.forKids && <span className="tag tag-kids">Детям</span>}
+          <span className={`tag tag-${event.type}`}>{isEventType(event.type) ? t.types[event.type] : event.type}</span>
+          {event.isFree && <span className="tag tag-free">{t.tags.free}</span>}
+          {event.forKids && <span className="tag tag-kids">{t.tags.kids}</span>}
         </span>
       </Link>
     </li>

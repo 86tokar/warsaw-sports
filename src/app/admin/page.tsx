@@ -3,8 +3,13 @@ import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db';
 import { formatFullDate, formatTime } from '@/lib/dates';
-import { typeLabel } from '@/lib/labels';
+import { isEventType } from '@/lib/labels';
+import { INTL_LOCALE, getDict } from '@/i18n';
 import { isAdminAuthorized } from '@/lib/admin-auth';
+
+// Админка на русском
+const t = getDict('ru');
+const RU = INTL_LOCALE.ru;
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Админка: Спортивная Варшава', robots: { index: false } };
@@ -48,7 +53,7 @@ export default async function AdminPage() {
         <section className="empty">
           <h2>Новых заявок нет</h2>
           <p>
-            <Link href="/">На главную</Link>
+            <Link href="/ru">На главную</Link>
           </p>
         </section>
       ) : (
@@ -58,7 +63,8 @@ export default async function AdminPage() {
               <div>
                 <div className="venue-name">{e.title}</div>
                 <div className="venue-sub">
-                  {typeLabel(e.type)} · {e.sport.name} · {formatFullDate(e.startsAt)}, {formatTime(e.startsAt)}
+                  {isEventType(e.type) ? t.types[e.type] : e.type} · {e.sport.name} · {formatFullDate(e.startsAt, RU)},{' '}
+                  {formatTime(e.startsAt, RU)}
                 </div>
                 <div className="venue-sub">
                   {e.venue ? `${e.venue.name}, ${e.venue.address}` : (e.locationNote ?? 'Место не указано')}

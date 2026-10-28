@@ -2,14 +2,17 @@ import Link from 'next/link';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { dayKey, dayLabel, isToday, resolveRange } from '@/lib/dates';
-import { isEventType, plural } from '@/lib/labels';
+import { isEventType } from '@/lib/labels';
 import type { Filters as F } from '@/lib/filters';
+import { INTL_LOCALE, getDict, href, plural, sportName, pageLang } from '@/i18n';
 import Filters from '@/components/Filters';
 import EventRow from '@/components/EventRow';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Home({ searchParams }: { searchParams: F }) {
+export default async function Home({ params, searchParams }: { params: { lang: string }; searchParams: F }) {
+  const lang = pageLang(params.lang);
+  const t = getDict(lang);
   const f = searchParams;
   const { from, to } = resolveRange(f.when);
 
@@ -24,7 +27,7 @@ export default async function Home({ searchParams }: { searchParams: F }) {
     ...(f.kids === '1' ? { forKids: true } : {}),
   };
 
-  const [events, sports, venues, venue] = await Promise.all([
+  const [events, sportRows, venues, venue] = await Promise.all([
     prisma.event.findMany({
       where,
       orderBy: { startsAt: 'asc' },
@@ -39,13 +42,16 @@ export default async function Home({ searchParams }: { searchParams: F }) {
           ...(f.sport ? [{ slug: f.sport }] : []),
         ],
       },
-      orderBy: { name: 'asc' },
     }),
     prisma.venue.findMany({ select: { district: true } }),
     f.venue ? prisma.venue.findUnique({ where: { id: f.venue }, select: { name: true } }) : null,
   ]);
 
-  const districts = Array.from(new Set(venues.map((v) => v.district))).sort();
+  const locale = INTL_LOCALE[lang];
+  const sports = sportRows
+    .map((s) => ({ slug: s.slug, name: sportName(t, s.slug, s.name) }))
+    .sort((a, b) => a.name.localeCompare(b.name, locale));
+  const districts = Array.from(new Set(venues.map((v) => v.district))).sort((a, b) => a.localeCompare(b, 'pl'));
 
   const days: { key: string; date: Date; items: typeof events }[] = [];
   for (const e of events) {
@@ -58,30 +64,28 @@ export default async function Home({ searchParams }: { searchParams: F }) {
   return (
     <main className="wrap">
       <section className="intro">
-        <h1>Спорт в Варшаве по дням</h1>
-        <p>
-          Матчи, турниры, забеги и открытые тренировки в одном списке. Выберите дату, вид спорта или район.
-        </p>
+        <h1>{t.home.title}</h1>
+        <p>{t.home.intro}</p>
       </section>
 
-      <Filters current={f} sports={sports} districts={districts} venueName={venue?.name} />
+      <Filters current={f} t={t} base={href(lang)} sports={sports} districts={districts} venueName={venue?.name} />
 
       <p className="count" aria-live="polite">
-        {events.length} {plural(events.length, ['событие', 'события', 'событий'])}
+        {events.length} {plural(events.length, t.home.count, lang)}
       </p>
 
       {days.length === 0 ? (
         <section className="empty">
-          <h2>Ничего не нашлось</h2>
+          <h2>{t.home.emptyTitle}</h2>
           <p>
-            По этим фильтрам нет событий. <Link href="/">Сбросьте фильтры</Link> или{' '}
-            <Link href="/submit">добавьте своё событие</Link>.
+            {t.home.emptyText} <Link href={href(lang)}>{t.home.reset}</Link> {t.home.or}{' '}
+            <Link href={href(lang, '/submit')}>{t.home.addOwn}</Link>.
           </p>
         </section>
       ) : (
         <div className="board">
           {days.map((day) => {
-            const l = dayLabel(day.date);
+            const l = dayLabel(day.date, locale);
             return (
               <section key={day.key} className={`day${isToday(day.date) ? ' today' : ''}`}>
                 <div className="day-head">
@@ -92,7 +96,7 @@ export default async function Home({ searchParams }: { searchParams: F }) {
                 </div>
                 <ul className="rows">
                   {day.items.map((e) => (
-                    <EventRow key={e.id} event={e} />
+                    <EventRow key={e.id} lang={lang} t={t} event={e} />
                   ))}
                 </ul>
               </section>

@@ -1,11 +1,17 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { prisma } from '@/lib/db';
-import { plural } from '@/lib/labels';
+import { getDict, href, isLocale, plural, pageLang } from '@/i18n';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Площадки: Спортивная Варшава' };
 
-export default async function VenuesPage() {
+export function generateMetadata({ params }: { params: { lang: string } }): Metadata {
+  return isLocale(params.lang) ? { title: getDict(params.lang).venues.title } : {};
+}
+
+export default async function VenuesPage({ params }: { params: { lang: string } }) {
+  const lang = pageLang(params.lang);
+  const t = getDict(lang);
   const venues = await prisma.venue.findMany({
     orderBy: [{ district: 'asc' }, { name: 'asc' }],
     include: {
@@ -15,8 +21,8 @@ export default async function VenuesPage() {
 
   return (
     <main className="wrap page">
-      <h1 className="page-title">Площадки</h1>
-      <p className="prose">Стадионы, арены, парки и залы, где проходят события.</p>
+      <h1 className="page-title">{t.venues.title}</h1>
+      <p className="prose">{t.venues.intro}</p>
       <ul className="venue-list">
         {venues.map((v) => (
           <li key={v.id}>
@@ -27,11 +33,11 @@ export default async function VenuesPage() {
               </div>
             </div>
             {v.events.length > 0 ? (
-              <Link href={`/?venue=${v.id}`} className="venue-sub">
-                {v.events.length} {plural(v.events.length, ['событие', 'события', 'событий'])} впереди
+              <Link href={`${href(lang)}?venue=${v.id}`} className="venue-sub">
+                {v.events.length} {plural(v.events.length, t.venues.ahead, lang)}
               </Link>
             ) : (
-              <div className="venue-sub">Событий впереди нет</div>
+              <div className="venue-sub">{t.venues.none}</div>
             )}
           </li>
         ))}

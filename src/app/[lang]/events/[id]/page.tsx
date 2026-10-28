@@ -3,7 +3,8 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { prisma } from '@/lib/db';
 import { formatFullDate, formatTime } from '@/lib/dates';
-import { typeLabel } from '@/lib/labels';
+import { isEventType } from '@/lib/labels';
+import { INTL_LOCALE, getDict, href, isLocale, sportName, pageLang } from '@/i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,17 +16,21 @@ async function getEvent(id: string) {
   return event && event.status === 'published' ? event : null;
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { lang: string; id: string } }): Promise<Metadata> {
+  if (!isLocale(params.lang)) return {};
   const event = await getEvent(params.id);
-  return { title: event ? `${event.title}: Спортивная Варшава` : 'Событие не найдено' };
+  return { title: event ? event.title : getDict(params.lang).event.notFound };
 }
 
-export default async function EventPage({ params }: { params: { id: string } }) {
+export default async function EventPage({ params }: { params: { lang: string; id: string } }) {
+  const lang = pageLang(params.lang);
+  const t = getDict(lang);
+  const locale = INTL_LOCALE[lang];
   const event = await getEvent(params.id);
   if (!event) notFound();
 
   const { venue, organizer } = event;
-  const price = event.isFree ? 'Бесплатно' : event.priceInfo || 'Уточняйте у организатора';
+  const price = event.isFree ? t.event.free : event.priceInfo || t.event.askOrganizer;
 
   let mapSrc: string | null = null;
   let mapLink: string | null = null;
@@ -39,22 +44,22 @@ export default async function EventPage({ params }: { params: { id: string } }) 
 
   return (
     <main className="wrap page">
-      <Link href="/" className="back">
-        Все события
+      <Link href={href(lang)} className="back">
+        {t.event.back}
       </Link>
       <h1 className="page-title">{event.title}</h1>
 
       <dl className="facts">
-        <dt>Когда</dt>
+        <dt>{t.event.when}</dt>
         <dd>
-          {formatFullDate(event.startsAt)}, {formatTime(event.startsAt)}
-          {event.endsAt ? ` до ${formatTime(event.endsAt)}` : ''}
+          {formatFullDate(event.startsAt, locale)}, {formatTime(event.startsAt, locale)}
+          {event.endsAt ? ` ${t.event.until} ${formatTime(event.endsAt, locale)}` : ''}
         </dd>
-        <dt>Тип</dt>
-        <dd>{typeLabel(event.type)}</dd>
-        <dt>Вид спорта</dt>
-        <dd>{event.sport.name}</dd>
-        <dt>Где</dt>
+        <dt>{t.event.type}</dt>
+        <dd>{isEventType(event.type) ? t.types[event.type] : event.type}</dd>
+        <dt>{t.event.sport}</dt>
+        <dd>{sportName(t, event.sport.slug, event.sport.name)}</dd>
+        <dt>{t.event.where}</dt>
         <dd>
           {venue ? (
             <>
@@ -63,20 +68,20 @@ export default async function EventPage({ params }: { params: { id: string } }) 
               {venue.address}, {venue.district}
             </>
           ) : (
-            event.locationNote ?? 'Место уточняется'
+            (event.locationNote ?? t.placeTbd)
           )}
         </dd>
         {event.forKids && (
           <>
-            <dt>Для кого</dt>
-            <dd>Для детей</dd>
+            <dt>{t.event.forWho}</dt>
+            <dd>{t.event.forKids}</dd>
           </>
         )}
-        <dt>Цена</dt>
+        <dt>{t.event.price}</dt>
         <dd>{price}</dd>
         {organizer && (
           <>
-            <dt>Организатор</dt>
+            <dt>{t.event.organizer}</dt>
             <dd>{organizer.name}</dd>
           </>
         )}
@@ -87,27 +92,27 @@ export default async function EventPage({ params }: { params: { id: string } }) 
       {event.url && (
         <p>
           <a className="btn" href={event.url} target="_blank" rel="noopener noreferrer">
-            Перейти на сайт события
+            {t.event.goToSite}
           </a>
         </p>
       )}
 
       {event.sourceUrl && (
         <p className="venue-sub">
-          Источник:{' '}
+          {t.event.source}:{' '}
           <a href={event.sourceUrl} target="_blank" rel="noopener noreferrer">
             {new URL(event.sourceUrl).host}
           </a>
-          . Время {event.type === 'match' ? 'матча' : 'события'} может измениться, проверяйте на официальном сайте.
+          . {event.type === 'match' ? t.event.timeMayChangeMatch : t.event.timeMayChangeEvent}
         </p>
       )}
 
       {mapSrc && mapLink && (
-        <section className="map" aria-label="Карта">
-          <iframe src={mapSrc} title={`Карта: ${venue?.name}`} loading="lazy" />
+        <section className="map" aria-label={t.event.map}>
+          <iframe src={mapSrc} title={`${t.event.map}: ${venue?.name}`} loading="lazy" />
           <p>
             <a href={mapLink} target="_blank" rel="noopener noreferrer">
-              Открыть большую карту
+              {t.event.openMap}
             </a>
           </p>
         </section>
