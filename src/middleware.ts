@@ -47,7 +47,7 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  // Всё, кроме служебных файлов Next.js и файлов с расширением (favicon.ico, robots.txt…)
-  matcher: ['/((?!_next|.*\\..*).*)'],
+  // Всё, кроме служебных файлов Next.js, иконок сайта (icon.svg, apple-icon) и файлов с расширением
+  matcher: ['/((?!_next|apple-icon|icon|.*\\..*).*)'],
 };
 

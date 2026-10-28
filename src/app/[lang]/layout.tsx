@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { Onest, Unbounded } from 'next/font/google';
 import { LOCALES, getDict, href, isLocale, type Locale } from '@/i18n';
 import LangSwitch from '@/components/LangSwitch';
+import NavigationProgress from '@/components/NavigationProgress';
 import '../globals.css';
 
 const onest = Onest({ subsets: ['latin', 'latin-ext', 'cyrillic'], variable: '--font-onest', display: 'swap' });
@@ -32,6 +33,9 @@ export default function LangLayout({ children, params }: { children: React.React
   return (
     <html lang={lang} className={`${onest.variable} ${unbounded.variable}`}>
       <body>
+        <Suspense>
+          <NavigationProgress />
+        </Suspense>
         <header className="site">
           <div className="wrap site-inner">
             <Link href={href(lang)} className="logo">
