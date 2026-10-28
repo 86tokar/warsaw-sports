@@ -56,6 +56,8 @@ model Event {
   isFree       Boolean   @default(false)
   // Событие для детей: детский забег, турнир, праздник, открытая тренировка для детей
   forKids      Boolean   @default(false)
+  // Для кого по полу: men | women | mixed (для всех); null — не указано. Дети — отдельно, forKids
+  gender       String?
   priceInfo    String?
   url          String?
   // Официальная страница, откуда взято событие (расписание клуба или лиги)

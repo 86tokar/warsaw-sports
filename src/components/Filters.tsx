@@ -35,6 +35,8 @@ export function Row({ label, children }: { label: string; children: React.ReactN
 
 export default function Filters({ current, t, base, sports, districts, venueName }: Props) {
   const when = current.when ?? 'all';
+  // ?kids=1 — старый вид ссылки на «детские»
+  const who = current.who ?? (current.kids === '1' ? 'kids' : undefined);
   const link = (patch: Partial<F>) => filterHref(current, patch, base);
   return (
     <section className="filters" aria-label={t.filters.aria}>
@@ -87,12 +89,14 @@ export default function Filters({ current, t, base, sports, districts, venueName
         </Row>
       )}
       <Row label={t.filters.forWho}>
-        <Chip href={link({ kids: undefined })} active={current.kids !== '1'}>
+        <Chip href={link({ kids: undefined, who: undefined })} active={!who}>
           {t.filters.everyone}
         </Chip>
-        <Chip href={link({ kids: '1' })} active={current.kids === '1'}>
-          {t.filters.kids}
-        </Chip>
+        {(['kids', 'women', 'men'] as const).map((w) => (
+          <Chip key={w} href={link({ kids: undefined, who: w })} active={who === w}>
+            {t.tags[w]}
+          </Chip>
+        ))}
       </Row>
       <Row label={t.filters.price}>
         <Chip href={link({ free: undefined })} active={current.free !== '1'}>

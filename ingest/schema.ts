@@ -27,6 +27,8 @@ export const ExtractedEvent = z.object({
   // true — вход или участие бесплатно по словам страницы; null — не сказано
   isFree: z.boolean().nullable().default(null),
   forKids: z.boolean().default(false),
+  // men | women | mixed; null — берётся из источника (gender в sources.ts) или не указано
+  gender: z.enum(['men', 'women', 'mixed']).nullable().default(null),
   evidence: z.string(),
 });
 

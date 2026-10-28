@@ -42,7 +42,7 @@ const pl: Dict = {
     whenOptions: { all: 'Wszystkie daty', today: 'Dziś', weekend: 'Weekend', week: '7 dni' },
   },
   types: { match: 'Mecz', tournament: 'Turniej', mass: 'Impreza masowa', open_training: 'Otwarty trening' },
-  tags: { free: 'Bezpłatnie', kids: 'Dla dzieci' },
+  tags: { free: 'Bezpłatnie', kids: 'Dzieci', men: 'Mężczyźni', women: 'Kobiety', mixed: 'Dla wszystkich' },
   placeTbd: 'Miejsce do potwierdzenia',
   event: {
     back: 'Wszystkie wydarzenia',

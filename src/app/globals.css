@@ -200,3 +200,8 @@ h1.with-icon .sport-icon { border-radius: 10px; }
 .row-sport .sport-icon { border-radius: 7px; }
 .logo { display: inline-flex; align-items: center; gap: 8px; }
 .logo .sport-icon { border-radius: 6px; }
+
+/* Для кого: мужчины / женщины / для всех (дети — .tag-kids) */
+.tag-gender-men { background: var(--vistula); border-color: var(--vistula); color: #fff; }
+.tag-gender-women { background: #8e2f6a; border-color: #8e2f6a; color: #fff; }
+.tag-gender-mixed { background: var(--green); border-color: var(--green); color: #fff; }

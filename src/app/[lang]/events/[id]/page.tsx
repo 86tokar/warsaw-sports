@@ -75,10 +75,17 @@ export default async function EventPage({ params }: { params: { lang: string; id
             (event.locationNote ?? t.placeTbd)
           )}
         </dd>
-        {event.forKids && (
+        {(event.forKids || event.gender) && (
           <>
             <dt>{t.event.forWho}</dt>
-            <dd>{t.event.forKids}</dd>
+            <dd>
+              {[
+                event.forKids ? t.tags.kids : null,
+                event.gender === 'men' || event.gender === 'women' || event.gender === 'mixed' ? t.tags[event.gender] : null,
+              ]
+                .filter(Boolean)
+                .join(', ')}
+            </dd>
           </>
         )}
         <dt>{t.event.price}</dt>

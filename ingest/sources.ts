@@ -16,6 +16,8 @@ export type Source = {
   homeVenue?: string;
   // Все события источника для детей
   forKids?: boolean;
+  // Пол команды: мужская, женская лига или смешанное событие (показывается у событий)
+  gender?: 'men' | 'women' | 'mixed';
   // Подсказка, как читать страницу: где дата, как понять, что матч домашний
   hint: string;
 };
@@ -68,6 +70,7 @@ export const SPORTS = {
 export const SOURCES: Source[] = [
   {
     id: 'legia-football',
+    gender: 'men',
     name: 'Legia Warszawa: mecze',
     url: 'https://legia.com/mecze',
     sport: 'football',
@@ -81,6 +84,7 @@ export const SOURCES: Source[] = [
   },
   {
     id: 'polonia-football',
+    gender: 'men',
     name: 'Polonia Warszawa: terminarz',
     url: 'https://kspolonia.pl/terminarz/',
     sport: 'football',
@@ -95,6 +99,7 @@ export const SOURCES: Source[] = [
   },
   {
     id: 'legia-basketball',
+    gender: 'men',
     name: 'Legia Warszawa (koszykówka): kalendarz meczów domowych',
     url: 'https://legiakosz.com/calendar/games/home.ics',
     sport: 'basketball',
@@ -110,6 +115,7 @@ export const SOURCES: Source[] = [
   },
   {
     id: 'dziki-basketball',
+    gender: 'men',
     name: 'PLK: Dziki Warszawa, terminarz',
     url: 'https://plk.pl/druzyny/11257/dziki-warszawa/terminarz',
     sport: 'basketball',
@@ -124,6 +130,7 @@ export const SOURCES: Source[] = [
   },
   {
     id: 'projekt-volleyball',
+    gender: 'men',
     name: 'TAURON Liga: terminarz',
     url: 'https://www.tauronliga.pl/games.html',
     sport: 'volleyball',
@@ -139,6 +146,7 @@ export const SOURCES: Source[] = [
   // Небольшие матчи: нижние лиги, женские команды, футзал (проверено 2026-10-24)
   {
     id: 'hutnik-football',
+    gender: 'men',
     name: 'Hutnik Warszawa: nadchodzące mecze',
     url: 'https://hutnikwarszawa.pl/mecze/nadchodzace/',
     sport: 'football',
@@ -152,6 +160,7 @@ export const SOURCES: Source[] = [
   },
   {
     id: 'legia-futsal',
+    gender: 'men',
     name: 'FOGO Futsal Ekstraklasa: Legia Warszawa',
     url: 'https://futsalekstraklasa.pl/zespol/legia-warszawa',
     sport: 'futsal',
@@ -165,6 +174,7 @@ export const SOURCES: Source[] = [
   },
   {
     id: 'skk-polonia-basketball',
+    gender: 'women',
     name: 'Basket Liga Kobiet: SKK Polonia Warszawa',
     url: 'https://basketligakobiet.pl/druzyny/d/3004/skk-polonia-warszawa/1.html',
     sport: 'basketball',
@@ -177,6 +187,7 @@ export const SOURCES: Source[] = [
   },
   {
     id: 'ksg-volleyball',
+    gender: 'women',
     name: 'TAURON 1. Liga Kobiet: terminarz',
     url: 'https://www.tauron1ligakobiet.pl/games.html',
     sport: 'volleyball',

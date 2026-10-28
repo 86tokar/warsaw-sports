@@ -42,7 +42,7 @@ const en: Dict = {
     whenOptions: { all: 'All dates', today: 'Today', weekend: 'Weekend', week: '7 days' },
   },
   types: { match: 'Match', tournament: 'Tournament', mass: 'Mass event', open_training: 'Open training' },
-  tags: { free: 'Free', kids: 'For kids' },
+  tags: { free: 'Free', kids: 'Kids', men: 'Men', women: 'Women', mixed: 'Everyone' },
   placeTbd: 'Venue to be confirmed',
   event: {
     back: 'All events',

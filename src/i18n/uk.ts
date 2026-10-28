@@ -42,7 +42,7 @@ const uk: Dict = {
     whenOptions: { all: 'Усі дати', today: 'Сьогодні', weekend: 'Вихідні', week: '7 днів' },
   },
   types: { match: 'Матч', tournament: 'Турнір', mass: 'Масова подія', open_training: 'Відкрите тренування' },
-  tags: { free: 'Безкоштовно', kids: 'Дітям' },
+  tags: { free: 'Безкоштовно', kids: 'Діти', men: 'Чоловіки', women: 'Жінки', mixed: 'Для всіх' },
   placeTbd: 'Місце уточнюється',
   event: {
     back: 'Усі події',

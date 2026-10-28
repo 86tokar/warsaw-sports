@@ -6,6 +6,8 @@ export type Filters = {
   when?: string;
   free?: string;
   kids?: string;
+  // Для кого: kids | women | men
+  who?: string;
 };
 
 // Собирает ссылку на главную с учётом текущих фильтров и изменения одного из них

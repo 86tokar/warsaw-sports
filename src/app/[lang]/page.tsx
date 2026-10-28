@@ -24,7 +24,9 @@ export default async function Home({ params, searchParams }: { params: { lang: s
     ...(f.district ? { venue: { district: f.district } } : {}),
     ...(f.venue ? { venueId: f.venue } : {}),
     ...(f.free === '1' ? { isFree: true } : {}),
-    ...(f.kids === '1' ? { forKids: true } : {}),
+    // Для кого: дети — отметка forKids; женщины и мужчины — плюс события «для всех»
+    ...(f.who === 'kids' || f.kids === '1' ? { forKids: true } : {}),
+    ...(f.who === 'women' || f.who === 'men' ? { gender: { in: [f.who, 'mixed'] } } : {}),
   };
 
   const [events, sportRows, venues, venue] = await Promise.all([

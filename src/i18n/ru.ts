@@ -42,7 +42,7 @@ const ru = {
     whenOptions: { all: 'Все даты', today: 'Сегодня', weekend: 'Выходные', week: '7 дней' },
   },
   types: { match: 'Матч', tournament: 'Турнир', mass: 'Массовое событие', open_training: 'Открытая тренировка' },
-  tags: { free: 'Бесплатно', kids: 'Детям' },
+  tags: { free: 'Бесплатно', kids: 'Дети', men: 'Мужчины', women: 'Женщины', mixed: 'Для всех' },
   placeTbd: 'Место уточняется',
   event: {
     back: 'Все события',

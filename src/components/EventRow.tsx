@@ -14,6 +14,7 @@ type Props = {
     startsAt: Date;
     isFree: boolean;
     forKids: boolean;
+    gender: string | null;
     locationNote: string | null;
     sport: { slug: string; name: string };
     venue: { name: string; district: string } | null;
@@ -40,6 +41,9 @@ export default function EventRow({ lang, t, event }: Props) {
           <span className={`tag tag-${event.type}`}>{isEventType(event.type) ? t.types[event.type] : event.type}</span>
           {event.isFree && <span className="tag tag-free">{t.tags.free}</span>}
           {event.forKids && <span className="tag tag-kids">{t.tags.kids}</span>}
+          {(event.gender === 'men' || event.gender === 'women' || event.gender === 'mixed') && (
+            <span className={`tag tag-gender-${event.gender}`}>{t.tags[event.gender]}</span>
+          )}
         </span>
       </Link>
     </li>

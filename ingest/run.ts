@@ -35,6 +35,7 @@ type Planned = {
   priceInfo: string | null;
   isFree: boolean;
   forKids: boolean;
+  gender: 'men' | 'women' | 'mixed' | null;
 };
 
 type Skipped = { source: string; match: string; reason: string };
@@ -139,6 +140,7 @@ function processSource(
       priceInfo: e.priceInfo,
       isFree: e.isFree === true,
       forKids: e.forKids || src.forKids === true,
+      gender: e.gender ?? src.gender ?? null,
     });
     report.planned++;
   }
@@ -171,6 +173,7 @@ async function save(planned: Planned[], sportIds: Record<string, string>) {
       endsAt: p.endsAt,
       isFree: p.isFree,
       forKids: p.forKids,
+      gender: p.gender,
       priceInfo: p.priceInfo,
       url: p.url,
       sourceUrl: src.url,
