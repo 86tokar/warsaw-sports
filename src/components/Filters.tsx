@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { EVENT_TYPES } from '@/lib/labels';
 import { WHEN_OPTIONS } from '@/lib/dates';
-import { filterHref, listParam, toggleParam, type Filters as F } from '@/lib/filters';
+import { filterHref, type Filters as F } from '@/lib/filters';
 import type { Dict } from '@/i18n';
 
 type Props = {
@@ -15,25 +15,9 @@ type Props = {
   venueName?: string;
 };
 
-// multi: чип можно выбрать вместе с другими (галочка вместо единственного выбора)
-export function Chip({
-  href,
-  active,
-  multi,
-  children,
-}: {
-  href: string;
-  active: boolean;
-  multi?: boolean;
-  children: React.ReactNode;
-}) {
+export function Chip({ href, active, children }: { href: string; active: boolean; children: React.ReactNode }) {
   return (
-    <Link
-      href={href}
-      className={multi ? 'chip chip-multi' : 'chip'}
-      aria-current={active ? 'true' : undefined}
-      scroll={false}
-    >
+    <Link href={href} className="chip" aria-current={active ? 'true' : undefined} scroll={false}>
       {children}
     </Link>
   );
@@ -51,9 +35,6 @@ export function Row({ label, children }: { label: string; children: React.ReactN
 export default function Filters({ current, t, base, sports, districts, venueName }: Props) {
   const when = current.when ?? 'all';
   const link = (patch: Partial<F>) => filterHref(current, patch, base);
-  const types = listParam(current.type);
-  const sportsOn = listParam(current.sport);
-  const districtsOn = listParam(current.district);
   return (
     <section className="filters" aria-label={t.filters.aria}>
       <Row label={t.filters.when}>
@@ -64,31 +45,31 @@ export default function Filters({ current, t, base, sports, districts, venueName
         ))}
       </Row>
       <Row label={t.filters.type}>
-        <Chip href={link({ type: undefined })} active={!types.length}>
+        <Chip href={link({ type: undefined })} active={!current.type}>
           {t.filters.any}
         </Chip>
         {EVENT_TYPES.map((type) => (
-          <Chip key={type} multi href={link({ type: toggleParam(current.type, type) })} active={types.includes(type)}>
+          <Chip key={type} href={link({ type })} active={current.type === type}>
             {t.types[type]}
           </Chip>
         ))}
       </Row>
       <Row label={t.filters.sport}>
-        <Chip href={link({ sport: undefined })} active={!sportsOn.length}>
+        <Chip href={link({ sport: undefined })} active={!current.sport}>
           {t.filters.any}
         </Chip>
         {sports.map((s) => (
-          <Chip key={s.slug} multi href={link({ sport: toggleParam(current.sport, s.slug) })} active={sportsOn.includes(s.slug)}>
+          <Chip key={s.slug} href={link({ sport: s.slug })} active={current.sport === s.slug}>
             {s.name}
           </Chip>
         ))}
       </Row>
       <Row label={t.filters.district}>
-        <Chip href={link({ district: undefined })} active={!districtsOn.length}>
+        <Chip href={link({ district: undefined })} active={!current.district}>
           {t.filters.any}
         </Chip>
         {districts.map((d) => (
-          <Chip key={d} multi href={link({ district: toggleParam(current.district, d) })} active={districtsOn.includes(d)}>
+          <Chip key={d} href={link({ district: d })} active={current.district === d}>
             {d}
           </Chip>
         ))}

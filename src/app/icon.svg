@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Иконка сайта: жёлтый мяч на тёмном фоне (цвета --ink и --sun из globals.css), без букв — подходит всем языкам -->
+  <!-- Site icon: yellow ball on dark background (site colours ink and sun). No double hyphens in XML comments. -->
   <rect width="32" height="32" rx="7" fill="#0f1b26"/>
   <circle cx="16" cy="16" r="10.5" fill="#f6c22b"/>
   <g fill="none" stroke="#0f1b26" stroke-width="1.8" stroke-linecap="round">
