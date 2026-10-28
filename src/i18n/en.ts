@@ -140,6 +140,7 @@ const en: Dict = {
     cityData: 'City classes and events data: Źródło: m.st. Warszawa, “Zajęcia sportowe” dataset, licensed under CC BY 4.0:',
     sites: 'Websites the schedules are collected from:',
     clubs: 'If you represent a club or organiser and want information corrected or removed, write to the site owner.',
+    pictograms: 'Sport pictograms come from Wikimedia Commons. Most of them (by Parutakupiu, Thadius856 and others) are in the public domain; on this site they are recoloured white on a dark background. Files under CC licences, with attribution:',
   },
   sports: {
     football: 'Football', basketball: 'Basketball', volleyball: 'Volleyball', hockey: 'Ice hockey', handball: 'Handball',

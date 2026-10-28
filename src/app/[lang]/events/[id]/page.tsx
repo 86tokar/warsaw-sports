@@ -5,6 +5,7 @@ import { prisma } from '@/lib/db';
 import { formatFullDate, formatTime } from '@/lib/dates';
 import { isEventType } from '@/lib/labels';
 import { INTL_LOCALE, getDict, href, isLocale, sportName, pageLang } from '@/i18n';
+import SportIcon from '@/components/SportIcon';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,7 +48,10 @@ export default async function EventPage({ params }: { params: { lang: string; id
       <Link href={href(lang)} className="back">
         {t.event.back}
       </Link>
-      <h1 className="page-title">{event.title}</h1>
+      <h1 className="page-title with-icon">
+        <SportIcon slug={event.sport.slug} size={56} />
+        {event.title}
+      </h1>
 
       <dl className="facts">
         <dt>{t.event.when}</dt>

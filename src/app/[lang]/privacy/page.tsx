@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { SOURCES } from '../../../../ingest/sources';
 import { getDict, isLocale, pageLang } from '@/i18n';
+import { PICTOGRAM_CREDITS } from '@/lib/pictograms';
 
 // Динамическая: CONTACT_EMAIL читается при открытии страницы, а не при сборке
 export const dynamic = 'force-dynamic';
@@ -53,6 +54,17 @@ export default function PrivacyPage({ params }: { params: { lang: string } }) {
           {t.sites} {hosts.join(', ')}.
         </p>
         <p>{t.clubs}</p>
+        <p>{t.pictograms}</p>
+        <ul>
+          {PICTOGRAM_CREDITS.filter((c) => !/public domain|^pd|cc0/i.test(c.license)).map((c) => (
+            <li key={c.file}>
+              <a href={c.page} target="_blank" rel="noopener noreferrer">
+                {c.file}
+              </a>
+              : {c.artist}, {c.license}
+            </li>
+          ))}
+        </ul>
       </section>
     </main>
   );

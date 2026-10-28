@@ -6,6 +6,7 @@ import { filterHref } from '@/lib/filters';
 import { isAudience } from '@/lib/labels';
 import { INTL_LOCALE, ageLabel, fill, getDict, href, isLocale, placeText, plural, sportName, pageLang } from '@/i18n';
 import { Chip, Row } from '@/components/Filters';
+import SportIcon from '@/components/SportIcon';
 
 export const dynamic = 'force-dynamic';
 
@@ -103,6 +104,7 @@ export default async function SectionsPage({
           </Chip>
           {sports.map((s) => (
             <Chip key={s.slug} href={link({ sport: s.slug })} active={f.sport === s.slug}>
+              <SportIcon slug={s.slug} size={16} />
               {s.name}
             </Chip>
           ))}
@@ -149,7 +151,10 @@ export default async function SectionsPage({
             return (
               <li key={a.id}>
                 <a href={a.url ?? a.sourceUrl ?? '#'} className="row" target="_blank" rel="noopener noreferrer">
-                  <span className="row-time">{sportName(t, a.sport.slug, a.sport.name)}</span>
+                  <span className="row-time row-sport">
+                    <SportIcon slug={a.sport.slug} size={36} />
+                    {sportName(t, a.sport.slug, a.sport.name)}
+                  </span>
                   <span>
                     <span className="row-title">{a.name}</span>
                     <span className="row-meta">

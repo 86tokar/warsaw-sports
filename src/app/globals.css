@@ -189,3 +189,14 @@ html.navigating main:not([aria-busy]) { opacity: 0.55; transition-delay: 0.15s; 
 
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
+
+/* Пиктограммы видов спорта (src/components/SportIcon.tsx) */
+.sport-icon { flex: none; display: inline-block; vertical-align: middle; border-radius: 4px; }
+.with-icon { display: inline-flex; align-items: center; gap: 6px; }
+h1.with-icon { display: flex; gap: 14px; align-items: center; }
+h1.with-icon .sport-icon { border-radius: 10px; }
+.chip .sport-icon { margin: -2px 5px 0 -4px; border-radius: 3px; }
+.row-sport { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; font-size: 0.85rem; }
+.row-sport .sport-icon { border-radius: 7px; }
+.logo { display: inline-flex; align-items: center; gap: 8px; }
+.logo .sport-icon { border-radius: 6px; }

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { formatTime } from '@/lib/dates';
 import { isEventType } from '@/lib/labels';
 import { INTL_LOCALE, href, sportName, type Dict, type Locale } from '@/i18n';
+import SportIcon from '@/components/SportIcon';
 
 type Props = {
   lang: Locale;
@@ -27,7 +28,10 @@ export default function EventRow({ lang, t, event }: Props) {
         <span>
           <span className="row-title">{event.title}</span>
           <span className="row-meta">
-            <span>{sportName(t, event.sport.slug, event.sport.name)}</span>
+            <span className="with-icon">
+              <SportIcon slug={event.sport.slug} size={18} />
+              {sportName(t, event.sport.slug, event.sport.name)}
+            </span>
             <span>{event.venue ? event.venue.name : (event.locationNote ?? t.placeTbd)}</span>
             {event.venue && <span>{event.venue.district}</span>}
           </span>

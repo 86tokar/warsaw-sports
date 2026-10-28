@@ -3,6 +3,7 @@ import { EVENT_TYPES } from '@/lib/labels';
 import { WHEN_OPTIONS } from '@/lib/dates';
 import { filterHref, type Filters as F } from '@/lib/filters';
 import type { Dict } from '@/i18n';
+import SportIcon from '@/components/SportIcon';
 
 type Props = {
   current: F;
@@ -60,6 +61,7 @@ export default function Filters({ current, t, base, sports, districts, venueName
         </Chip>
         {sports.map((s) => (
           <Chip key={s.slug} href={link({ sport: s.slug })} active={current.sport === s.slug}>
+            <SportIcon slug={s.slug} size={16} />
             {s.name}
           </Chip>
         ))}

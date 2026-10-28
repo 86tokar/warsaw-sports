@@ -140,6 +140,7 @@ const pl: Dict = {
     cityData: 'Dane o zajęciach i wydarzeniach miejskich: Źródło: m.st. Warszawa, zbiór danych „Zajęcia sportowe” na licencji CC BY 4.0:',
     sites: 'Strony, z których zbieramy terminarze:',
     clubs: 'Jeśli reprezentujesz klub lub organizatora i chcesz poprawić lub usunąć informacje, napisz do właściciela strony.',
+    pictograms: 'Piktogramy dyscyplin — Wikimedia Commons. Większość (autorzy Parutakupiu, Thadius856 i inni) to domena publiczna; na stronie są przekolorowane na biało na ciemnym tle. Pliki na licencjach CC z podaniem autora:',
   },
   sports: {
     football: 'Piłka nożna', basketball: 'Koszykówka', volleyball: 'Siatkówka', hockey: 'Hokej', handball: 'Piłka ręczna',

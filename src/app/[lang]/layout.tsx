@@ -39,6 +39,8 @@ export default function LangLayout({ children, params }: { children: React.React
         <header className="site">
           <div className="wrap site-inner">
             <Link href={href(lang)} className="logo">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/icon.svg" alt="" width={28} height={28} className="sport-icon" />
               {t.siteName}
             </Link>
             <nav aria-label={t.nav.aria}>
