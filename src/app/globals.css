@@ -188,3 +188,6 @@ html.navigating main:not([aria-busy]) { opacity: 0.55; transition-delay: 0.15s; 
 }
 
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+/* Чипы множественного выбора: у выбранного — галочка, чтобы было видно, что можно выбрать несколько */
+.chip-multi[aria-current='true']::before { content: '✓'; margin-right: 5px; font-weight: 700; }

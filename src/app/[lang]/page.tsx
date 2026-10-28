@@ -3,7 +3,7 @@ import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { dayKey, dayLabel, isToday, resolveRange } from '@/lib/dates';
 import { isEventType } from '@/lib/labels';
-import type { Filters as F } from '@/lib/filters';
+import { listParam, type Filters as F } from '@/lib/filters';
 import { INTL_LOCALE, getDict, href, plural, sportName, pageLang } from '@/i18n';
 import Filters from '@/components/Filters';
 import EventRow from '@/components/EventRow';
@@ -16,12 +16,16 @@ export default async function Home({ params, searchParams }: { params: { lang: s
   const f = searchParams;
   const { from, to } = resolveRange(f.when);
 
+  // Внутри строки фильтра — «или» (несколько видов спорта), между строками — «и»
+  const types = listParam(f.type).filter(isEventType);
+  const sportsOn = listParam(f.sport);
+  const districtsOn = listParam(f.district);
   const where: Prisma.EventWhereInput = {
     status: 'published',
     startsAt: { gte: from, ...(to ? { lt: to } : {}) },
-    ...(f.type && isEventType(f.type) ? { type: f.type } : {}),
-    ...(f.sport ? { sport: { slug: f.sport } } : {}),
-    ...(f.district ? { venue: { district: f.district } } : {}),
+    ...(types.length ? { type: { in: types } } : {}),
+    ...(sportsOn.length ? { sport: { slug: { in: sportsOn } } } : {}),
+    ...(districtsOn.length ? { venue: { district: { in: districtsOn } } } : {}),
     ...(f.venue ? { venueId: f.venue } : {}),
     ...(f.free === '1' ? { isFree: true } : {}),
     ...(f.kids === '1' ? { forKids: true } : {}),
@@ -39,7 +43,7 @@ export default async function Home({ params, searchParams }: { params: { lang: s
       where: {
         OR: [
           { events: { some: { status: 'published', startsAt: { gte: new Date() } } } },
-          ...(f.sport ? [{ slug: f.sport }] : []),
+          ...(sportsOn.length ? [{ slug: { in: sportsOn } }] : []),
         ],
       },
     }),

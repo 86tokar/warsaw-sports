@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
-import { filterHref } from '@/lib/filters';
+import { filterHref, listParam, toggleParam } from '@/lib/filters';
 import { isAudience } from '@/lib/labels';
 import { INTL_LOCALE, ageLabel, fill, getDict, href, isLocale, placeText, plural, sportName, pageLang } from '@/i18n';
 import { Chip, Row } from '@/components/Filters';
@@ -40,11 +40,16 @@ export default async function SectionsPage({
   const audience =
     f.who === 'kids' ? { in: ['kids', 'all'] } : f.who === 'adults' ? { in: ['adults', 'seniors', 'all'] } : undefined;
 
+  // Вид спорта и район — несколько значений сразу (внутри строки «или»)
+  const sportsOn = listParam(f.sport);
+  const districtsOn = listParam(f.district);
   const where: Prisma.ActivityWhereInput = {
     status: 'published',
     ...(audience ? { audience } : {}),
-    ...(f.sport ? { sport: { slug: f.sport } } : {}),
-    ...(f.district ? { OR: [{ venue: { district: f.district } }, { district: f.district }] } : {}),
+    ...(sportsOn.length ? { sport: { slug: { in: sportsOn } } } : {}),
+    ...(districtsOn.length
+      ? { OR: [{ venue: { district: { in: districtsOn } } }, { district: { in: districtsOn } }] }
+      : {}),
     ...(f.free === '1' ? { isFree: true } : {}),
   };
 
@@ -98,21 +103,21 @@ export default async function SectionsPage({
           </Chip>
         </Row>
         <Row label={t.filters.sport}>
-          <Chip href={link({ sport: undefined })} active={!f.sport}>
+          <Chip href={link({ sport: undefined })} active={!sportsOn.length}>
             {t.filters.any}
           </Chip>
           {sports.map((s) => (
-            <Chip key={s.slug} href={link({ sport: s.slug })} active={f.sport === s.slug}>
+            <Chip key={s.slug} multi href={link({ sport: toggleParam(f.sport, s.slug) })} active={sportsOn.includes(s.slug)}>
               {s.name}
             </Chip>
           ))}
         </Row>
         <Row label={t.filters.district}>
-          <Chip href={link({ district: undefined })} active={!f.district}>
+          <Chip href={link({ district: undefined })} active={!districtsOn.length}>
             {t.filters.any}
           </Chip>
           {districts.map((d) => (
-            <Chip key={d} href={link({ district: d })} active={f.district === d}>
+            <Chip key={d} multi href={link({ district: toggleParam(f.district, d) })} active={districtsOn.includes(d)}>
               {d}
             </Chip>
           ))}
