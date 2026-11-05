@@ -131,7 +131,7 @@ const en: Dict = {
     contact: 'Contact the site owner:',
     contactLater: 'The site owner’s contact details will appear here.',
     dataTitle: 'What data we keep',
-    data: 'There is no registration and there are no accounts. We do not use advertising or analytics cookies (only a cookie that remembers your language). If you send an event through the form, we keep what you entered (name, time, place, organiser, link) to review and publish it. Do not include personal phone numbers or e-mail addresses in the form. Our hosting provider keeps technical request logs (including IP addresses) to run and protect the service.',
+    data: 'There is no registration and there are no accounts. We do not use advertising or analytics cookies (only a cookie that remembers your language). We count visits anonymously with Vercel Web Analytics, without cookies and without storing IP addresses. If you send an event through the form, we keep what you entered (name, time, place, organiser, link) to review and publish it. Do not include personal phone numbers or e-mail addresses in the form. Our hosting provider keeps technical request logs (including IP addresses) to run and protect the service.',
     rights:
       'To correct or delete data you sent, write to the site owner. Under the GDPR (RODO) you may also lodge a complaint with the Polish data protection authority (Prezes Urzędu Ochrony Danych Osobowych).',
     sourcesTitle: 'Where the schedules come from',

@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Onest, Unbounded } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 import { LOCALES, getDict, href, isLocale, type Locale } from '@/i18n';
 import LangSwitch from '@/components/LangSwitch';
 import NavigationProgress from '@/components/NavigationProgress';
@@ -60,6 +61,8 @@ export default function LangLayout({ children, params }: { children: React.React
             {t.footer.text} <Link href={href(lang, '/privacy')}>{t.footer.privacy}</Link>
           </div>
         </footer>
+        {/* Анонимная статистика посещений Vercel: без cookie, без хранения IP */}
+        <Analytics />
       </body>
     </html>
   );

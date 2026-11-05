@@ -131,7 +131,7 @@ const pl: Dict = {
     contact: 'Kontakt z właścicielem strony:',
     contactLater: 'Kontakt do właściciela strony pojawi się tutaj.',
     dataTitle: 'Jakie dane przechowujemy',
-    data: 'Strona nie ma rejestracji ani kont. Nie używamy reklamowych ani analitycznych plików cookie (tylko cookie z wybranym językiem). Jeśli wysyłasz wydarzenie przez formularz, przechowujemy wpisane dane (nazwę, czas, miejsce, organizatora, link), aby sprawdzić i opublikować zgłoszenie. Nie podawaj w formularzu prywatnych numerów telefonu ani adresów e-mail. Hosting prowadzi techniczne logi zapytań (w tym adresy IP) w celu działania i ochrony serwisu.',
+    data: 'Strona nie ma rejestracji ani kont. Nie używamy reklamowych ani analitycznych plików cookie (tylko cookie z wybranym językiem). Liczbę odwiedzin liczymy anonimowo za pomocą Vercel Web Analytics, bez plików cookie i bez zapisywania adresów IP. Jeśli wysyłasz wydarzenie przez formularz, przechowujemy wpisane dane (nazwę, czas, miejsce, organizatora, link), aby sprawdzić i opublikować zgłoszenie. Nie podawaj w formularzu prywatnych numerów telefonu ani adresów e-mail. Hosting prowadzi techniczne logi zapytań (w tym adresy IP) w celu działania i ochrony serwisu.',
     rights:
       'Aby poprawić lub usunąć przesłane dane, napisz do właściciela strony. Zgodnie z RODO masz także prawo wnieść skargę do Prezesa Urzędu Ochrony Danych Osobowych.',
     sourcesTitle: 'Skąd pochodzą terminarze',
